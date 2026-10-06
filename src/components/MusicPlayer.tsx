@@ -20,9 +20,11 @@ function randomTrackIndex() {
 /** Player compacto: escolhe uma faixa aleatória e tenta iniciar ao abrir o site. */
 export function MusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
   const [trackIndex] = useState(randomTrackIndex);
   const [isPlaying, setIsPlaying] = useState(false);
   const [autoplayBlocked, setAutoplayBlocked] = useState(false);
+  const [dockTop, setDockTop] = useState<number | null>(null);
   const track = TRACKS[trackIndex];
 
   useEffect(() => {
@@ -42,6 +44,47 @@ export function MusicPlayer() {
       });
 
     return () => audio.pause();
+  }, []);
+
+  useEffect(() => {
+    let frame = 0;
+
+    const updateDockPosition = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = 0;
+        const isMobile = window.matchMedia('(max-width: 767px)').matches;
+        const dock = document.querySelector<HTMLElement>('[data-music-player-dock]');
+        const footer = dock?.closest('footer');
+        const player = playerRef.current;
+
+        if (!isMobile || !dock || !footer || !player) {
+          setDockTop(null);
+          return;
+        }
+
+        const footerRect = footer.getBoundingClientRect();
+        const footerIsVisible = footerRect.top < window.innerHeight && footerRect.bottom > 0;
+        if (!footerIsVisible) {
+          setDockTop(null);
+          return;
+        }
+
+        const dockRect = dock.getBoundingClientRect();
+        const playerHeight = player.getBoundingClientRect().height;
+        setDockTop(dockRect.top + (dockRect.height - playerHeight) / 2);
+      });
+    };
+
+    updateDockPosition();
+    window.addEventListener('scroll', updateDockPosition, { passive: true });
+    window.addEventListener('resize', updateDockPosition);
+
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', updateDockPosition);
+      window.removeEventListener('resize', updateDockPosition);
+    };
   }, []);
 
   const togglePlayback = async () => {
@@ -65,7 +108,11 @@ export function MusicPlayer() {
   };
 
   return (
-    <div className="fixed bottom-5 left-4 z-40 flex w-[68vw] max-w-72 min-w-0 items-center gap-2 rounded-full border border-white/10 bg-ink-950/90 p-2 pr-3 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.75)] backdrop-blur-md">
+    <div
+      ref={playerRef}
+      style={dockTop === null ? undefined : { top: `${dockTop}px`, bottom: 'auto' }}
+      className={`fixed left-4 z-40 flex w-[68vw] max-w-72 min-w-0 items-center gap-2 rounded-full border border-white/10 bg-ink-950/90 p-2 pr-3 shadow-[0_10px_30px_-8px_rgba(0,0,0,0.75)] backdrop-blur-md ${dockTop === null ? 'bottom-5' : ''}`}
+    >
       <audio
         ref={audioRef}
         src={track.src}

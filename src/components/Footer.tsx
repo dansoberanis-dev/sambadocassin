@@ -63,6 +63,8 @@ export function Footer() {
           </div>
         </div>
 
+        <div data-music-player-dock className="flex h-16 items-center md:hidden" aria-hidden="true" />
+
         <div className="mt-14 border-t border-white/10 pt-10">
           <p className="mb-5 text-center font-display text-sm tracking-[0.35em] text-white/40">OUÇA EM TODAS AS PLATAFORMAS</p>
           <StreamingButtons compact />
@@ -76,7 +78,7 @@ export function Footer() {
             href="https://daniel-soberanis.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-center transition-colors hover:text-gold-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400"
+            className="text-center font-bold text-gold-500 transition-colors hover:text-gold-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-gold-400"
           >
             Desenvolvido por: Daniel Soberanis
           </a>
