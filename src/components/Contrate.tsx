@@ -21,7 +21,7 @@ const EMPTY: FormState = { nome: '', telefone: '', email: '', tipo: '', data: ''
 
 function Field({ label, children, className }: { label: string; children: ReactNode; className?: string }) {
   return (
-    <label className={cn('block', className)}>
+    <label className={cn('block min-w-0', className)}>
       <span className="mb-1.5 block text-[0.68rem] font-bold uppercase tracking-[0.2em] text-white/55">{label}</span>
       {children}
     </label>
@@ -35,7 +35,7 @@ function ContactCard({ icon, label, value, href }: { icon: ReactNode; label: str
       href={href}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-ink-950/60 p-4 backdrop-blur transition-all duration-300 hover:translate-x-1 hover:border-gold-500/50 hover:bg-ink-950/80"
+      className="group flex w-full min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-ink-950/60 p-4 backdrop-blur transition-all duration-300 hover:translate-x-1 hover:border-gold-500/50 hover:bg-ink-950/80"
     >
       <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold-500/10 text-gold-400 transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-ink-950">
         {icon}
@@ -117,7 +117,7 @@ export function Contrate() {
         <div className="absolute inset-x-0 top-0 h-40 bg-linear-to-b from-ink-950 to-transparent" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl px-5 md:px-8">
+      <div className="relative mx-auto w-full min-w-0 max-w-7xl px-5 md:px-8">
         <SectionTitle kicker="Shows e eventos" title="Contrate" />
 
         <Reveal animation="fadeIn" delay={300}>
@@ -127,26 +127,26 @@ export function Contrate() {
           </p>
         </Reveal>
 
-        <div className="grid gap-10 lg:grid-cols-5">
+        <div className="grid w-full min-w-0 gap-10 lg:grid-cols-5">
           {/* Contatos */}
-          <div className="space-y-4 lg:col-span-2">
+          <div className="min-w-0 space-y-4 lg:col-span-2">
             {contacts.map((c, i) => (
-              <Reveal key={c.label} animation="fadeInLeft" delay={i * 150}>
+              <Reveal key={c.label} animation="fadeInLeft" delay={i * 150} className="w-full min-w-0">
                 <ContactCard {...c} />
               </Reveal>
             ))}
 
-            <Reveal animation="fadeInLeft" delay={contacts.length * 150}>
-              <div className="rounded-2xl border border-gold-500/25 bg-gold-500/[0.06] p-5">
-                <p className="text-[0.65rem] font-bold uppercase tracking-[0.25em] text-gold-400">{contact.managerRole}</p>
+            <Reveal animation="fadeInLeft" delay={contacts.length * 150} className="w-full min-w-0">
+              <div className="w-full min-w-0 rounded-2xl border border-gold-500/25 bg-gold-500/[0.06] p-5">
+                <p className="min-w-0 break-words text-[0.65rem] font-bold uppercase tracking-[0.25em] text-gold-400">{contact.managerRole}</p>
                 <p className="mt-1 font-display text-2xl tracking-wide text-cream">{contact.manager}</p>
-                <p className="mt-1 flex items-center gap-2 text-sm text-white/55">
-                  <MapPin className="size-4 shrink-0 text-gold-500" />
-                  {contact.area}
+                <p className="mt-1 flex min-w-0 items-start gap-2 text-sm text-white/55">
+                  <MapPin className="mt-0.5 size-4 shrink-0 text-gold-500" />
+                  <span className="min-w-0 break-words">{contact.area}</span>
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   {config.eventTypes.slice(0, 6).map((t) => (
-                    <span key={t} className="rounded-full border border-white/10 bg-ink-950/50 px-3 py-1 text-xs font-medium text-white/70">
+                    <span key={t} className="max-w-full break-words rounded-full border border-white/10 bg-ink-950/50 px-3 py-1 text-xs font-medium text-white/70">
                       {t}
                     </span>
                   ))}
@@ -156,12 +156,12 @@ export function Contrate() {
           </div>
 
           {/* Formulário */}
-          <Reveal animation="fadeInRight" delay={200} className="lg:col-span-3">
-            <form onSubmit={onSubmit} className="glass rounded-3xl p-6 md:p-9" noValidate>
-              <h3 className="font-display text-3xl tracking-wide text-cream md:text-4xl">Peça seu orçamento</h3>
-              <p className="mt-1 text-sm text-white/55">Preencha os dados e envie direto pelo WhatsApp ou por e-mail.</p>
+          <Reveal animation="fadeInRight" delay={200} className="w-full min-w-0 lg:col-span-3">
+            <form onSubmit={onSubmit} className="glass w-full min-w-0 max-w-full rounded-3xl p-5 sm:p-6 md:p-9" noValidate>
+              <h3 className="max-w-full break-words font-display text-3xl tracking-wide text-cream md:text-4xl">Peça seu orçamento</h3>
+              <p className="mt-1 break-words text-sm text-white/55">Preencha os dados e envie direto pelo WhatsApp ou por e-mail.</p>
 
-              <div className="mt-7 grid gap-4 sm:grid-cols-2">
+              <div className="mt-7 grid min-w-0 gap-4 sm:grid-cols-2">
                 <Field label="Nome *">
                   <input className="field" value={form.nome} onChange={update('nome')} placeholder="Seu nome" autoComplete="name" />
                 </Field>
@@ -222,12 +222,12 @@ export function Contrate() {
                 </p>
               )}
 
-              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                <button type="submit" className="btn-gold flex-1">
+              <div className="mt-6 flex min-w-0 flex-col gap-3 sm:flex-row">
+                <button type="submit" className="btn-gold flex w-full min-w-0 flex-1 whitespace-normal px-4 text-center sm:w-auto">
                   <WhatsAppIcon className="size-5" />
                   Enviar pelo WhatsApp
                 </button>
-                <button type="button" onClick={() => send('email')} className="btn-outline flex-1">
+                <button type="button" onClick={() => send('email')} className="btn-outline w-full min-w-0 flex-1 whitespace-normal px-4 text-center sm:w-auto">
                   <Mail className="size-5" />
                   Enviar por e-mail
                 </button>

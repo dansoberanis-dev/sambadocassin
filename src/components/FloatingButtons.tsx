@@ -24,7 +24,7 @@ export function FloatingButtons() {
       </button>
 
       <a
-        href={whatsappLink(`Olá! Quero contratar o ${config.name} 🎶`)}
+        href={whatsappLink(`Olá, vim pelo site, quero contratar o ${config.name}`)}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Falar no WhatsApp"

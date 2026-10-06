@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Heart, MessageCircle } from 'lucide-react';
 import { config } from '@/data/config';
-import { initials } from '@/utils/helpers';
 import { Reveal } from './Reveal';
 import { InstagramIcon } from './BrandIcons';
 
@@ -69,9 +68,13 @@ export function Instagram() {
           <header className="mb-10 flex flex-col items-center justify-between gap-6 text-center md:flex-row md:text-left">
             <div className="flex flex-col items-center gap-4 md:flex-row">
               <div className="rounded-full bg-[conic-gradient(from_180deg,#f9ce34,#ee2a7b,#6228d7,#f9ce34)] p-[3px]">
-                <div className="flex size-16 items-center justify-center rounded-full border-4 border-ink-900 bg-ink-800 font-script text-2xl text-gold-400">
-                  {initials(config.name)}
-                </div>
+                <img
+                  src="/images/logo-samba-cassin.png"
+                  alt="Logo oficial do Samba do Cassin"
+                  width={64}
+                  height={64}
+                  className="size-16 rounded-full border-4 border-ink-900 bg-ink-800 object-contain"
+                />
               </div>
               <div>
                 <p className="font-display text-sm tracking-[0.35em] text-gold-400">SIGA NO INSTAGRAM</p>

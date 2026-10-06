@@ -299,8 +299,8 @@ export const config = {
   /* --------------------- CONTATO --------------------- */
   contact: {
     /** 👉 PREENCHA com o WhatsApp do grupo (só números, com DDI 55 + DDD). Ex.: 5541999999999 */
-    whatsapp: '5541999999999',
-    whatsappDisplay: '(41) 99999-9999',
+    whatsapp: '5541984542307',
+    whatsappDisplay: '(41) 98454-2307',
     phone: '+554133334444',
     phoneDisplay: '(41) 3333-4444',
     email: 'contato@sambadocassin.com.br',
