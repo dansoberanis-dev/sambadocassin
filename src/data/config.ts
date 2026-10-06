@@ -241,7 +241,7 @@ export const config = {
   since: ANO_DE_INICIO,
   city: 'Curitiba / PR',
 
-  heroImage: 'images/cassinhero.png',
+  heroImage: 'images/cassinhero-show.jpg',
   bioImage: 'images/cassinbio.png',
   contrateImage:
     'https://images.pexels.com/photos/38485789/pexels-photo-38485789.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',

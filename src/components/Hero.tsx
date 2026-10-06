@@ -123,7 +123,7 @@ export function Hero() {
           alt=""
           fetchPriority="high"
           onError={() => setHeroIndex((i) => (i < HERO_SOURCES.length - 1 ? i + 1 : i))}
-          className="animate-kenburns size-full object-cover"
+          className="animate-kenburns size-full object-cover object-[50%_50%] md:object-[50%_46%]"
         />
         <div className="absolute inset-0 bg-linear-to-b from-ink-950/80 via-ink-950/50 to-ink-900" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_10%,rgba(7,5,4,0.85)_80%)]" />
