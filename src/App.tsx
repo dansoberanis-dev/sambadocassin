@@ -11,6 +11,7 @@ import { Contrate } from './components/Contrate';
 import { Instagram } from './components/Instagram';
 import { Footer } from './components/Footer';
 import { FloatingButtons } from './components/FloatingButtons';
+import { MusicPlayer } from './components/MusicPlayer';
 
 /**
  * Site do grupo — estrutura inspirada em pericles.com.br:
@@ -36,6 +37,7 @@ export default function App() {
       </main>
       <Footer />
       <FloatingButtons />
+      <MusicPlayer />
     </div>
   );
 }
