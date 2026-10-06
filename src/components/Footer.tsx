@@ -1,7 +1,6 @@
 import { Heart, Mail, MapPin, Phone } from 'lucide-react';
 import { config } from '@/data/config';
 import { NAV_LINKS, whatsappLink } from '@/utils/helpers';
-import { Logo } from './Logo';
 import { SocialLinks, WhatsAppIcon } from './BrandIcons';
 import { StreamingButtons } from './StreamingButtons';
 
@@ -16,7 +15,15 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-5 md:px-8">
         <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
           <div className="lg:col-span-2">
-            <Logo size="md" align="left" />
+            <img
+              src="/images/logo-horizontal-samba-cassin.png"
+              alt={config.name}
+              width={1638}
+              height={446}
+              loading="lazy"
+              decoding="async"
+              className="h-12 w-auto max-w-full object-contain object-left md:h-14"
+            />
             <p className="mt-4 max-w-sm text-sm leading-relaxed text-white/55">{config.footerText}</p>
             <SocialLinks className="mt-6" />
           </div>
