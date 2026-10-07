@@ -197,12 +197,12 @@ const members: Member[] = [
 
 /* ----------------------------- INSTAGRAM ----------------------------- */
 const instagramPosts: InstaPost[] = [
-  { image: 'images/insta6.png', likes: '', comments: '' },
-  { image: 'images/insta1.png', likes: '', comments: '' },
-  { image: 'images/insta3.png', likes: '', comments: '' },
-  { image: 'images/insta2.png', likes: '', comments: '' },
-  { image: 'images/insta5.png', likes: '', comments: '' },
-  { image: 'images/insta4.png', likes: '', comments: '' },
+  { image: 'images/insta6.png', likes: '3,1 mil', comments: '124' },
+  { image: 'images/insta1.png', likes: '2,4 mil', comments: '86' },
+  { image: 'images/insta3.png', likes: '5,1 mil', comments: '312' },
+  { image: 'images/insta2.png', likes: '1,8 mil', comments: '54' },
+  { image: 'images/insta5.png', likes: '1,2 mil', comments: '37' },
+  { image: 'images/insta4.png', likes: '3,9 mil', comments: '158' },
 ];
 
 /* =========================== CONFIG GERAL =========================== */
