@@ -3,7 +3,7 @@ import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { CalendarDays, Clock, Info, Lock, MapPin } from 'lucide-react';
 import { config, type Show } from '@/data/config';
-import { getUpcomingShows, MONTHS, pad2, parseLocalDate, WEEKDAYS } from '@/utils/helpers';
+import { getShowDateTime, getUpcomingShows, MONTHS, pad2, parseLocalDate, WEEKDAYS } from '@/utils/helpers';
 import { useEmblaNav } from '@/hooks/hooks';
 import { Reveal } from './Reveal';
 import { SectionTitle } from './SectionTitle';
@@ -104,9 +104,33 @@ export function Agenda() {
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
-    const interval = window.setInterval(() => setNow(new Date()), 60_000);
-    return () => window.clearInterval(interval);
-  }, []);
+    const currentTime = Date.now();
+    const nextShowTime = config.shows.reduce<number | undefined>((next, show) => {
+      const startTime = getShowDateTime(show).getTime();
+      if (startTime <= currentTime) return next;
+      return next === undefined || startTime < next ? startTime : next;
+    }, undefined);
+    const msUntilNextShow = nextShowTime === undefined
+      ? 60_000
+      : Math.max(50, Math.min(60_000, nextShowTime - currentTime + 50));
+
+    const refreshNow = () => setNow(new Date());
+    const refreshIfVisible = () => {
+      if (document.visibilityState === 'visible') refreshNow();
+    };
+
+    const nextShowTimer = window.setTimeout(refreshNow, msUntilNextShow);
+    const safetyInterval = window.setInterval(refreshNow, 60_000);
+    window.addEventListener('focus', refreshNow);
+    document.addEventListener('visibilitychange', refreshIfVisible);
+
+    return () => {
+      window.clearTimeout(nextShowTimer);
+      window.clearInterval(safetyInterval);
+      window.removeEventListener('focus', refreshNow);
+      document.removeEventListener('visibilitychange', refreshIfVisible);
+    };
+  }, [now]);
 
   const shows = useMemo(() => getUpcomingShows(config.shows, now), [now]);
   const plugins = useMemo(
