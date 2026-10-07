@@ -168,6 +168,7 @@ export function Agenda() {
               onDot={scrollTo}
               onPrev={scrollPrev}
               onNext={scrollNext}
+              showDots={false}
               progress={{ key: `${tick}-${hoverCycle}`, duration: AUTOPLAY_DELAY, paused: hover }}
             />
 

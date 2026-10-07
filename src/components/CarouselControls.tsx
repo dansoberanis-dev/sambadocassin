@@ -7,6 +7,8 @@ interface CarouselControlsProps {
   onDot: (index: number) => void;
   onPrev: () => void;
   onNext: () => void;
+  /** Exibe as bolinhas de posição; pode ser desativado na Agenda. */
+  showDots?: boolean;
   /** Barra de progresso do autoplay */
   progress?: { key: string; duration: number; paused: boolean };
 }
@@ -25,42 +27,43 @@ function ArrowButton({ dir, onClick }: { dir: 'prev' | 'next'; onClick: () => vo
   );
 }
 
-export function CarouselControls({ count, selected, onDot, onPrev, onNext, progress }: CarouselControlsProps) {
+export function CarouselControls({ count, selected, onDot, onPrev, onNext, showDots = true, progress }: CarouselControlsProps) {
   if (count <= 1) return null;
 
   return (
-    <div className="mt-8 flex flex-col items-center gap-5">
-      <div className="flex items-center gap-4">
+    <div className="mt-8 flex flex-col items-center">
+      <div className={cn('flex items-center', progress ? 'gap-3 sm:gap-4' : 'gap-4')}>
         <ArrowButton dir="prev" onClick={onPrev} />
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          {Array.from({ length: count }, (_, i) => (
-            <button
-              key={i}
-              type="button"
-              onClick={() => onDot(i)}
-              aria-label={`Ir para o item ${i + 1}`}
-              aria-current={i === selected}
-              className={cn(
-                'h-2.5 rounded-full transition-all duration-500',
-                i === selected ? 'w-8 bg-gold-500 shadow-[0_0_12px_rgba(242,168,29,0.7)]' : 'w-2.5 bg-white/20 hover:bg-white/40'
-              )}
-            />
-          ))}
-        </div>
+        {showDots && (
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            {Array.from({ length: count }, (_, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => onDot(i)}
+                aria-label={`Ir para o item ${i + 1}`}
+                aria-current={i === selected}
+                className={cn(
+                  'h-2.5 rounded-full transition-all duration-500',
+                  i === selected ? 'w-8 bg-gold-500 shadow-[0_0_12px_rgba(242,168,29,0.7)]' : 'w-2.5 bg-white/20 hover:bg-white/40'
+                )}
+              />
+            ))}
+          </div>
+        )}
+        {progress && (
+          <div className="h-0.5 w-28 overflow-hidden rounded-full bg-white/10 sm:w-44">
+            {!progress.paused && (
+              <div
+                key={progress.key}
+                className="animate-progress h-full w-full bg-linear-to-r from-gold-600 to-gold-300"
+                style={{ animationDuration: `${progress.duration}ms` }}
+              />
+            )}
+          </div>
+        )}
         <ArrowButton dir="next" onClick={onNext} />
       </div>
-
-      {progress && (
-        <div className="h-0.5 w-44 overflow-hidden rounded-full bg-white/10">
-          {!progress.paused && (
-            <div
-              key={progress.key}
-              className="animate-progress h-full w-full bg-linear-to-r from-gold-600 to-gold-300"
-              style={{ animationDuration: `${progress.duration}ms` }}
-            />
-          )}
-        </div>
-      )}
     </div>
   );
 }
