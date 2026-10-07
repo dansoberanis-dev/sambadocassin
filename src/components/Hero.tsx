@@ -5,6 +5,7 @@ import { getNextShow, getShowDateTime, INTRO_DELAY, pad2, parseLocalDate, WEEKDA
 import { Reveal } from './Reveal';
 import { Equalizer } from './Equalizer';
 import { StreamingButtons } from './StreamingButtons';
+import { useAgendaShows } from '@/contexts/AgendaContext';
 
 /** Partículas douradas subindo (poeira de luz do palco) */
 function Particles() {
@@ -45,6 +46,7 @@ function Particles() {
 
 /** Card "Próximo show"; avança sozinho quando chega a data e a hora do evento. */
 function NextShow() {
+  const shows = useAgendaShows();
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {
@@ -52,7 +54,7 @@ function NextShow() {
     return () => window.clearInterval(interval);
   }, []);
 
-  const next = useMemo(() => getNextShow(config.shows, new Date(now)), [now]);
+  const next = useMemo(() => getNextShow(shows, new Date(now)), [shows, now]);
   const target = useMemo(() => (next ? getShowDateTime(next) : null), [next]);
 
   if (!next || !target) return null;

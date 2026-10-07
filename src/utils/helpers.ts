@@ -44,8 +44,9 @@ export function getNextShow(shows: Show[], now = new Date()): Show | undefined {
 /** Data + horário do show (usado na contagem regressiva) */
 export function getShowDateTime(show: Show): Date {
   const date = parseLocalDate(show.date);
-  const match = show.time?.match(/(\d{1,2})\s*h\s*(\d{2})?/i);
-  date.setHours(match ? Number(match[1]) : 20, match?.[2] ? Number(match[2]) : 0, 0, 0);
+  const match = show.time?.match(/(\d{1,2})\s*(?::|h)\s*(\d{2})?/i);
+  const plainHour = show.time?.trim().match(/^(\d{1,2})$/);
+  date.setHours(match ? Number(match[1]) : plainHour ? Number(plainHour[1]) : 20, match?.[2] ? Number(match[2]) : 0, 0, 0);
   return date;
 }
 

@@ -62,45 +62,42 @@ export interface Stat {
 
 const ANO_DE_INICIO = 2018;
 
-/* ============================ AGENDA — OUTUBRO ============================ */
-/* Agenda de outubro/2026, conferida com o cartaz enviado. */
+/* ============================ AGENDA — FALLBACK ============================ */
+/* Fallback local para quando AGENDA_CSV_URL não estiver configurada. */
 const shows: Show[] = [
-  { date: '2026-10-03', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h', ticketUrl: 'https://www.instagram.com/folhetimbar' },
-  { date: '2026-10-04', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-09', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h', ticketUrl: 'https://www.instagram.com/sambadocassin' },
+  { date: '2026-10-03', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h' },
+  { date: '2026-10-04', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30' },
+  { date: '2026-10-09', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h' },
   {
     date: '2026-10-10',
     city: 'Curitiba / PR',
     venue: 'Sociedade 13 de Maio',
     time: '15h',
     description: 'Festa das Crianças',
-    ticketUrl: 'https://www.instagram.com/sambadocassin',
   },
-  { date: '2026-10-10', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h', ticketUrl: 'https://www.instagram.com/folhetimbar' },
-  { date: '2026-10-11', city: 'Curitiba / PR', venue: 'Samba da Pérola', time: '16h', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-11', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30', ticketUrl: 'https://www.instagram.com/sambadocassin' },
+  { date: '2026-10-10', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h' },
+  { date: '2026-10-11', city: 'Curitiba / PR', venue: 'Samba da Pérola', time: '16h' },
+  { date: '2026-10-11', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30' },
   {
     date: '2026-10-12',
     city: 'Curitiba / PR',
     venue: 'Nuuk Club — Centro',
     time: '16h',
     description: 'Pandeiro e Cocada',
-    ticketUrl: 'https://www.instagram.com/sambadocassin',
   },
-  { date: '2026-10-16', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-17', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h', ticketUrl: 'https://www.instagram.com/folhetimbar' },
+  { date: '2026-10-16', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h' },
+  { date: '2026-10-17', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h' },
   {
     date: '2026-10-18',
     city: 'Curitiba / PR',
     venue: 'Falei que ia Dar Samba',
     time: '16h',
-    ticketUrl: 'https://www.instagram.com/sambadocassin',
   },
-  { date: '2026-10-18', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-18', city: 'Curitiba / PR', venue: 'Capilé Seu Zé', time: '21h', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-24', city: 'Curitiba / PR', venue: 'Folhetim Bar', time: '20h', ticketUrl: 'https://www.instagram.com/folhetimbar' },
-  { date: '2026-10-25', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30', ticketUrl: 'https://www.instagram.com/sambadocassin' },
-  { date: '2026-10-30', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h', ticketUrl: 'https://www.instagram.com/sambadocassin' },
+  { date: '2026-10-18', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30' },
+  { date: '2026-10-18', city: 'Curitiba / PR', venue: 'Capilé Seu Zé', time: '21h' },
+  { date: '2026-10-24', city: 'Curitiba / PR', venue: 'Folhetim Bar', time: '20h' },
+  { date: '2026-10-25', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30' },
+  { date: '2026-10-30', city: 'Curitiba / PR', venue: 'Feira Bar', time: '19h' },
 ];
 
 /* =========================== DISCOGRAFIA =========================== */

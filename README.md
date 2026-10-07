@@ -4,7 +4,7 @@ Site oficial do grupo de samba **Samba do Cassin** (Curitiba/PR) — inspirado n
 
 **O que o site tem:**
 - Capa com logo animada, foto de palco, botões de Spotify/YouTube e contagem regressiva para o próximo show
-- **Agenda** em carrossel automático (roda sozinha) com "Mais Informações" em cada show
+- **Agenda** em carrossel automático com controles de avançar/voltar; cada show leva aos ingressos ou ao Instagram para mais informações
 - **Lançamento** com capa do álbum "O Princípio" + tracklist
 - **Discografia** com as capas oficiais (O Princípio, De Rezar e Sambar, Quartinha Cheia)
 - **Fotos** em mosaico com tela cheia, **Bio** com história e integrantes, **Contrate** com WhatsApp/e-mail, **Instagram** e rodapé completo
@@ -139,7 +139,8 @@ git push
 
 | Quero mudar… | Arquivo |
 |---|---|
-| Shows da agenda, textos, contatos, redes sociais, integrantes, fotos, tracklist | `src/data/config.ts` ← **90% das edições são aqui!** |
+| Shows da agenda (fallback), textos, contatos, redes sociais, integrantes, fotos, tracklist | `src/data/config.ts` |
+| Agenda ao vivo | O site lê o CSV publicado da planilha temporária já usada no Preview. `AGENDA_CSV_URL` em Production pode sobrescrever essa fonte; quando Cassin publicar a oficial, substituir o endereço por esse. O site consulta a fonte automaticamente; não precisa de redeploy por show. Se o feed falhar, usa `config.shows`. Shows somem após o horário de início, mesmo que continuem marcados como confirmados. Sem link de ingresso, o card mostra `MAIS INFORMAÇÕES` e leva ao Instagram do grupo; com link, mostra `INGRESSOS AQUI`. A coluna `DESCRIÇÃO` aparece no card. O carrossel avança automaticamente e exibe apenas as setas de navegação e a barra de progresso entre elas. |
 | Foto de fundo da capa | `public/images/cassin3.jpg` (substitua o arquivo, mantendo o nome) |
 | Foto da seção Bio | `public/images/cassinbio.jpg` |
 | Título da aba do navegador | `index.html` (tag `<title>`) |

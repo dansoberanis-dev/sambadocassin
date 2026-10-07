@@ -12,6 +12,7 @@ import { Instagram } from './components/Instagram';
 import { Footer } from './components/Footer';
 import { FloatingButtons } from './components/FloatingButtons';
 import { MusicPlayer } from './components/MusicPlayer';
+import { AgendaProvider } from './contexts/AgendaContext';
 
 /**
  * Site do grupo — estrutura inspirada em pericles.com.br:
@@ -21,23 +22,25 @@ import { MusicPlayer } from './components/MusicPlayer';
  */
 export default function App() {
   return (
-    <div className="overflow-x-clip">
-      <Preloader />
-      <Navbar />
-      <main>
-        <Hero />
-        <Marquee />
-        <Agenda />
-        <Lancamento />
-        <Discografia />
-        <Fotos />
-        <Bio />
-        <Contrate />
-        <Instagram />
-      </main>
-      <Footer />
-      <FloatingButtons />
-      <MusicPlayer />
-    </div>
+    <AgendaProvider>
+      <div className="overflow-x-clip">
+        <Preloader />
+        <Navbar />
+        <main>
+          <Hero />
+          <Marquee />
+          <Agenda />
+          <Lancamento />
+          <Discografia />
+          <Fotos />
+          <Bio />
+          <Contrate />
+          <Instagram />
+        </main>
+        <Footer />
+        <FloatingButtons />
+        <MusicPlayer />
+      </div>
+    </AgendaProvider>
   );
 }

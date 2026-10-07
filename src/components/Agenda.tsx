@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { CalendarDays, Clock, Info, Lock, MapPin } from 'lucide-react';
+import { CalendarDays, Clock, Info, MapPin } from 'lucide-react';
 import { config, type Show } from '@/data/config';
 import { getShowDateTime, getUpcomingShows, MONTHS, pad2, parseLocalDate, WEEKDAYS } from '@/utils/helpers';
 import { useEmblaNav } from '@/hooks/hooks';
@@ -9,6 +9,7 @@ import { Reveal } from './Reveal';
 import { SectionTitle } from './SectionTitle';
 import { CarouselControls } from './CarouselControls';
 import { InstagramIcon } from './BrandIcons';
+import { useAgendaShows } from '@/contexts/AgendaContext';
 
 /** Tempo (ms) que cada show fica parado antes de rodar */
 const AUTOPLAY_DELAY = 3500;
@@ -61,22 +62,15 @@ function ShowCard({ show }: { show: Show }) {
           )}
 
           <div className="mt-auto pt-5">
-            {show.ticketUrl ? (
-              <a href={show.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-gold w-full">
-                <Info className="size-4" />
-                Mais Informações
-              </a>
-            ) : show.privateEvent ? (
-              <span className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 py-3 font-display tracking-[0.14em] text-white/45">
-                <Lock className="size-4" />
-                Evento fechado
-              </span>
-            ) : (
-              <span className="flex w-full items-center justify-center gap-2 rounded-full border border-gold-500/30 py-3 font-display tracking-[0.14em] text-gold-300/80">
-                <CalendarDays className="size-4" />
-                Ingressos em breve
-              </span>
-            )}
+            <a
+              href={show.ticketUrl || config.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold w-full"
+            >
+              <Info className="size-4" />
+              {show.ticketUrl ? 'INGRESSOS AQUI' : 'MAIS INFORMAÇÕES'}
+            </a>
           </div>
         </div>
       </div>
@@ -101,11 +95,12 @@ function EmptyAgenda() {
 }
 
 export function Agenda() {
+  const allShows = useAgendaShows();
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
     const currentTime = Date.now();
-    const nextShowTime = config.shows.reduce<number | undefined>((next, show) => {
+    const nextShowTime = allShows.reduce<number | undefined>((next, show) => {
       const startTime = getShowDateTime(show).getTime();
       if (startTime <= currentTime) return next;
       return next === undefined || startTime < next ? startTime : next;
@@ -130,9 +125,9 @@ export function Agenda() {
       window.removeEventListener('focus', refreshNow);
       document.removeEventListener('visibilitychange', refreshIfVisible);
     };
-  }, [now]);
+  }, [allShows, now]);
 
-  const shows = useMemo(() => getUpcomingShows(config.shows, now), [now]);
+  const shows = useMemo(() => getUpcomingShows(allShows, now), [allShows, now]);
   const plugins = useMemo(
     () => [Autoplay({ delay: AUTOPLAY_DELAY, stopOnInteraction: false, stopOnMouseEnter: true })],
     []
@@ -169,7 +164,7 @@ export function Agenda() {
               onMouseEnter={() => setHover(true)}
               onMouseLeave={() => {
                 setHover(false);
-                setHoverCycle((c) => c + 1);
+                setHoverCycle((cycle) => cycle + 1);
               }}
             >
               <div className="-ml-5 flex touch-pan-y py-4">
