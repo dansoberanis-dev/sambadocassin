@@ -1,11 +1,11 @@
 import { useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
-import { ArrowUpRight, Check, Mail, MapPin, Phone } from 'lucide-react';
+import { Check, Mail, MapPin } from 'lucide-react';
 import { config } from '@/data/config';
 import { formatDateBR, whatsappLink } from '@/utils/helpers';
 import { cn } from '@/utils/cn';
 import { Reveal } from './Reveal';
 import { SectionTitle } from './SectionTitle';
-import { InstagramIcon, WhatsAppIcon } from './BrandIcons';
+import { WhatsAppIcon } from './BrandIcons';
 
 type FormState = {
   nome: string;
@@ -28,29 +28,8 @@ function Field({ label, children, className }: { label: string; children: ReactN
   );
 }
 
-function ContactCard({ icon, label, value, href }: { icon: ReactNode; label: string; value: string; href: string }) {
-  const external = href.startsWith('http');
-  return (
-    <a
-      href={href}
-      target={external ? '_blank' : undefined}
-      rel={external ? 'noopener noreferrer' : undefined}
-      className="group flex w-full min-w-0 items-center gap-3 rounded-2xl border border-white/10 bg-ink-950/60 p-4 backdrop-blur transition-all duration-300 hover:translate-x-1 hover:border-gold-500/50 hover:bg-ink-950/80"
-    >
-      <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-gold-500/10 text-gold-400 transition-colors duration-300 group-hover:bg-gold-500 group-hover:text-ink-950">
-        {icon}
-      </span>
-      <span className="min-w-0 flex-1">
-        <span className="block text-[0.65rem] font-bold uppercase tracking-[0.25em] text-white/45">{label}</span>
-        <span className="block truncate text-base font-semibold text-cream">{value}</span>
-      </span>
-      <ArrowUpRight className="size-5 shrink-0 text-white/30 transition-all duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-gold-400" />
-    </a>
-  );
-}
-
 export function Contrate() {
-  const { contact, social } = config;
+  const { contact } = config;
   const [form, setForm] = useState<FormState>(EMPTY);
   const [error, setError] = useState('');
   const [sent, setSent] = useState<null | 'whatsapp' | 'email'>(null);
@@ -93,18 +72,6 @@ export function Contrate() {
     send('whatsapp');
   };
 
-  const contacts = [
-    {
-      icon: <WhatsAppIcon className="size-6" />,
-      label: 'WhatsApp',
-      value: contact.whatsappDisplay,
-      href: whatsappLink(`Olá! Quero contratar o ${config.name} 🎶`),
-    },
-    { icon: <Phone className="size-6" />, label: 'Telefone', value: contact.phoneDisplay, href: `tel:${contact.phone}` },
-    { icon: <Mail className="size-6" />, label: 'E-mail', value: contact.email, href: `mailto:${contact.email}` },
-    { icon: <InstagramIcon className="size-6" />, label: 'Instagram', value: social.instagramHandle, href: social.instagram },
-  ];
-
   const today = new Date().toISOString().split('T')[0];
 
   return (
@@ -127,36 +94,31 @@ export function Contrate() {
           </p>
         </Reveal>
 
-        <div className="grid w-full min-w-0 gap-10 lg:grid-cols-5">
-          {/* Contatos */}
-          <div className="min-w-0 space-y-4 lg:col-span-2">
-            {contacts.map((c, i) => (
-              <Reveal key={c.label} animation="fadeInLeft" delay={i * 150} className="w-full min-w-0">
-                <ContactCard {...c} />
-              </Reveal>
-            ))}
-
-            <Reveal animation="fadeInLeft" delay={contacts.length * 150} className="w-full min-w-0">
-              <div className="w-full min-w-0 rounded-2xl border border-gold-500/25 bg-gold-500/[0.06] p-5">
-                <p className="min-w-0 break-words text-[0.65rem] font-bold uppercase tracking-[0.25em] text-gold-400">{contact.managerRole}</p>
-                <p className="mt-1 font-display text-2xl tracking-wide text-cream">{contact.manager}</p>
-                <p className="mt-1 flex min-w-0 items-start gap-2 text-sm text-white/55">
+        <div className="mx-auto w-full max-w-4xl min-w-0">
+          <Reveal animation="fadeInLeft" delay={150} className="mb-8 w-full min-w-0">
+            <div className="w-full min-w-0 rounded-2xl border border-gold-500/25 bg-gold-500/[0.06] p-5 sm:p-6">
+              <div className="flex min-w-0 flex-col items-center gap-3 text-center sm:flex-row sm:justify-between sm:text-left">
+                <div className="min-w-0">
+                  <p className="break-words text-[0.65rem] font-bold uppercase tracking-[0.25em] text-gold-400">{contact.managerRole}</p>
+                  <p className="mt-1 font-display text-2xl tracking-wide text-cream">{contact.manager}</p>
+                </div>
+                <p className="flex min-w-0 items-start gap-2 text-sm text-white/55 sm:max-w-[48%] sm:justify-end">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-gold-500" />
                   <span className="min-w-0 break-words">{contact.area}</span>
                 </p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  {config.eventTypes.slice(0, 6).map((t) => (
-                    <span key={t} className="max-w-full break-words rounded-full border border-white/10 bg-ink-950/50 px-3 py-1 text-xs font-medium text-white/70">
-                      {t}
-                    </span>
-                  ))}
-                </div>
               </div>
-            </Reveal>
-          </div>
+              <div className="mt-4 flex flex-wrap justify-center gap-2">
+                {config.eventTypes.slice(0, 6).map((t) => (
+                  <span key={t} className="max-w-full break-words rounded-full border border-white/10 bg-ink-950/50 px-3 py-1 text-xs font-medium text-white/70">
+                    {t}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </Reveal>
 
           {/* Formulário */}
-          <Reveal animation="fadeInRight" delay={200} className="w-full min-w-0 lg:col-span-3">
+          <Reveal animation="fadeInRight" delay={200} className="w-full min-w-0">
             <form onSubmit={onSubmit} className="glass w-full min-w-0 max-w-full rounded-3xl p-5 sm:p-6 md:p-9" noValidate>
               <h3 className="max-w-full break-words font-display text-3xl tracking-wide text-cream md:text-4xl">Peça seu orçamento</h3>
               <p className="mt-1 break-words text-sm text-white/55">Preencha os dados e envie direto pelo WhatsApp ou por e-mail.</p>
