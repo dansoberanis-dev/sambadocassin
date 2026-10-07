@@ -9,6 +9,7 @@ import { Reveal } from './Reveal';
 import { SectionTitle } from './SectionTitle';
 import { CarouselControls } from './CarouselControls';
 import { InstagramIcon } from './BrandIcons';
+import { useAgendaShows } from '@/contexts/AgendaContext';
 
 /** Tempo (ms) que cada show fica parado antes de rodar */
 const AUTOPLAY_DELAY = 3500;
@@ -101,6 +102,7 @@ function EmptyAgenda() {
 }
 
 export function Agenda() {
+  const allShows = useAgendaShows();
   const [now, setNow] = useState(() => new Date());
 
   useEffect(() => {
@@ -108,7 +110,7 @@ export function Agenda() {
     return () => window.clearInterval(interval);
   }, []);
 
-  const shows = useMemo(() => getUpcomingShows(config.shows, now), [now]);
+  const shows = useMemo(() => getUpcomingShows(allShows, now), [allShows, now]);
   const plugins = useMemo(
     () => [Autoplay({ delay: AUTOPLAY_DELAY, stopOnInteraction: false, stopOnMouseEnter: true })],
     []

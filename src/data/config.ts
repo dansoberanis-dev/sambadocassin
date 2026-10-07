@@ -62,8 +62,8 @@ export interface Stat {
 
 const ANO_DE_INICIO = 2018;
 
-/* ============================ AGENDA — OUTUBRO ============================ */
-/* Agenda de outubro/2026, conferida com o cartaz enviado. */
+/* ============================ AGENDA — FALLBACK ============================ */
+/* Fallback local para quando AGENDA_CSV_URL não estiver configurada. */
 const shows: Show[] = [
   { date: '2026-10-03', city: 'Curitiba / PR', venue: 'Folhetim', time: '20h', ticketUrl: 'https://www.instagram.com/folhetimbar' },
   { date: '2026-10-04', city: 'Curitiba / PR', venue: 'Cana Benta', time: '19h30', ticketUrl: 'https://www.instagram.com/sambadocassin' },

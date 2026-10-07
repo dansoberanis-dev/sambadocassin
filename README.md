@@ -139,7 +139,8 @@ git push
 
 | Quero mudar… | Arquivo |
 |---|---|
-| Shows da agenda, textos, contatos, redes sociais, integrantes, fotos, tracklist | `src/data/config.ts` ← **90% das edições são aqui!** |
+| Shows da agenda (fallback), textos, contatos, redes sociais, integrantes, fotos, tracklist | `src/data/config.ts` |
+| Agenda ao vivo, quando habilitada | Planilha Google publicada como CSV; configurar `AGENDA_CSV_URL` nas variáveis de ambiente da Vercel. O site consulta a fonte automaticamente; não precisa de redeploy por show. |
 | Foto de fundo da capa | `public/images/cassin3.jpg` (substitua o arquivo, mantendo o nome) |
 | Foto da seção Bio | `public/images/cassinbio.jpg` |
 | Título da aba do navegador | `index.html` (tag `<title>`) |
