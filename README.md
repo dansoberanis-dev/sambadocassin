@@ -4,7 +4,7 @@ Site oficial do grupo de samba **Samba do Cassin** (Curitiba/PR) — inspirado n
 
 **O que o site tem:**
 - Capa com logo animada, foto de palco, botões de Spotify/YouTube e contagem regressiva para o próximo show
-- **Agenda** em carrossel automático (roda sozinha) com "Mais Informações" em cada show
+- **Agenda** em carrossel automático com controles de avançar/voltar; cada show leva aos ingressos ou ao Instagram para mais informações
 - **Lançamento** com capa do álbum "O Princípio" + tracklist
 - **Discografia** com as capas oficiais (O Princípio, De Rezar e Sambar, Quartinha Cheia)
 - **Fotos** em mosaico com tela cheia, **Bio** com história e integrantes, **Contrate** com WhatsApp/e-mail, **Instagram** e rodapé completo
@@ -140,7 +140,7 @@ git push
 | Quero mudar… | Arquivo |
 |---|---|
 | Shows da agenda (fallback), textos, contatos, redes sociais, integrantes, fotos, tracklist | `src/data/config.ts` |
-| Agenda ao vivo, quando habilitada | Planilha Google publicada como CSV; configurar `AGENDA_CSV_URL` nas variáveis de ambiente da Vercel. O site consulta a fonte automaticamente; não precisa de redeploy por show. |
+| Agenda ao vivo, quando habilitada | Planilha Google publicada como CSV; configurar `AGENDA_CSV_URL` nas variáveis de ambiente da Vercel. O site consulta a fonte automaticamente; não precisa de redeploy por show. Sem link de ingresso, o card mostra `MAIS INFORMAÇÕES` e leva ao Instagram do grupo; com link, mostra `INGRESSOS AQUI`. O carrossel avança automaticamente e exibe apenas as setas de navegação. |
 | Foto de fundo da capa | `public/images/cassin3.jpg` (substitua o arquivo, mantendo o nome) |
 | Foto da seção Bio | `public/images/cassinbio.jpg` |
 | Título da aba do navegador | `index.html` (tag `<title>`) |

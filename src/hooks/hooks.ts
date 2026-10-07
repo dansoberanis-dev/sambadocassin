@@ -91,13 +91,11 @@ export function useCountdown(target: Date | null) {
 export function useEmblaNav(api: EmblaApi, onUserNav?: () => void) {
   const [selected, setSelected] = useState(0);
   const [count, setCount] = useState(0);
-  const [tick, setTick] = useState(0);
 
   useEffect(() => {
     if (!api) return;
     const onSelect = () => {
       setSelected(api.selectedScrollSnap());
-      setTick((t) => t + 1);
     };
     const onReInit = () => {
       setCount(api.scrollSnapList().length);
@@ -128,5 +126,5 @@ export function useEmblaNav(api: EmblaApi, onUserNav?: () => void) {
     onUserNav?.();
   }, [api, onUserNav]);
 
-  return { selected, count, tick, scrollTo, scrollPrev, scrollNext };
+  return { selected, count, scrollTo, scrollPrev, scrollNext };
 }

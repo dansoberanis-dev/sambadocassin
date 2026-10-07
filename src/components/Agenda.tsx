@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
-import { CalendarDays, Clock, Info, Lock, MapPin } from 'lucide-react';
+import { CalendarDays, Clock, Info, MapPin } from 'lucide-react';
 import { config, type Show } from '@/data/config';
 import { getUpcomingShows, MONTHS, pad2, parseLocalDate, WEEKDAYS } from '@/utils/helpers';
 import { useEmblaNav } from '@/hooks/hooks';
@@ -62,22 +62,15 @@ function ShowCard({ show }: { show: Show }) {
           )}
 
           <div className="mt-auto pt-5">
-            {show.ticketUrl ? (
-              <a href={show.ticketUrl} target="_blank" rel="noopener noreferrer" className="btn-gold w-full">
-                <Info className="size-4" />
-                Mais Informações
-              </a>
-            ) : show.privateEvent ? (
-              <span className="flex w-full items-center justify-center gap-2 rounded-full border border-white/10 py-3 font-display tracking-[0.14em] text-white/45">
-                <Lock className="size-4" />
-                Evento fechado
-              </span>
-            ) : (
-              <span className="flex w-full items-center justify-center gap-2 rounded-full border border-gold-500/30 py-3 font-display tracking-[0.14em] text-gold-300/80">
-                <CalendarDays className="size-4" />
-                Ingressos em breve
-              </span>
-            )}
+            <a
+              href={show.ticketUrl || config.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-gold w-full"
+            >
+              <Info className="size-4" />
+              {show.ticketUrl ? 'INGRESSOS AQUI' : 'MAIS INFORMAÇÕES'}
+            </a>
           </div>
         </div>
       </div>
@@ -117,9 +110,7 @@ export function Agenda() {
   );
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: 'start' }, plugins);
   const resetTimer = useCallback(() => plugins[0].reset?.(), [plugins]);
-  const { selected, count, tick, scrollTo, scrollPrev, scrollNext } = useEmblaNav(emblaApi, resetTimer);
-  const [hover, setHover] = useState(false);
-  const [hoverCycle, setHoverCycle] = useState(0);
+  const { selected, count, scrollTo, scrollPrev, scrollNext } = useEmblaNav(emblaApi, resetTimer);
 
   return (
     <section id="agenda" className="relative scroll-mt-16 overflow-hidden bg-ink-900 py-24 md:py-32">
@@ -141,15 +132,7 @@ export function Agenda() {
               </p>
             </Reveal>
 
-            <div
-              ref={emblaRef}
-              className="overflow-hidden"
-              onMouseEnter={() => setHover(true)}
-              onMouseLeave={() => {
-                setHover(false);
-                setHoverCycle((c) => c + 1);
-              }}
-            >
+            <div ref={emblaRef} className="overflow-hidden">
               <div className="-ml-5 flex touch-pan-y py-4">
                 {shows.map((show, i) => (
                   <div
@@ -170,7 +153,7 @@ export function Agenda() {
               onDot={scrollTo}
               onPrev={scrollPrev}
               onNext={scrollNext}
-              progress={{ key: `${tick}-${hoverCycle}`, duration: AUTOPLAY_DELAY, paused: hover }}
+              showDots={false}
             />
 
             <Reveal animation="fadeIn" delay={200}>
