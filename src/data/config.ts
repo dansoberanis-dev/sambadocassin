@@ -197,32 +197,12 @@ const members: Member[] = [
 
 /* ----------------------------- INSTAGRAM ----------------------------- */
 const instagramPosts: InstaPost[] = [
-  { image: 'images/cassin3.jpg', likes: '3,1 mil', comments: '124' },
-  { image: 'images/hero.jpg', likes: '2,4 mil', comments: '86' },
-  {
-    image:
-      'https://images.pexels.com/photos/38485789/pexels-photo-38485789.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=627&w=1200',
-    likes: '5,1 mil',
-    comments: '312',
-  },
-  {
-    image:
-      'https://images.pexels.com/photos/39776742/pexels-photo-39776742.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-    likes: '1,8 mil',
-    comments: '54',
-  },
-  {
-    image:
-      'https://images.pexels.com/photos/19943363/pexels-photo-19943363.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940',
-    likes: '1,2 mil',
-    comments: '37',
-  },
-  {
-    image:
-      'https://images.pexels.com/photos/27917833/pexels-photo-27917833.jpeg?auto=compress&cs=tinysrgb&fit=crop&h=1200&w=800',
-    likes: '3,9 mil',
-    comments: '158',
-  },
+  { image: 'images/insta6.png', likes: '', comments: '' },
+  { image: 'images/insta1.png', likes: '', comments: '' },
+  { image: 'images/insta3.png', likes: '', comments: '' },
+  { image: 'images/insta2.png', likes: '', comments: '' },
+  { image: 'images/insta5.png', likes: '', comments: '' },
+  { image: 'images/insta4.png', likes: '', comments: '' },
 ];
 
 /* =========================== CONFIG GERAL =========================== */
