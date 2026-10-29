@@ -139,10 +139,11 @@ function albumFromWordPress(post: WordPressPost): GalleryAlbum | null {
 interface CoverLayersProps {
   src: string;
   alt: string;
+  zoomOnHover?: boolean;
 }
 
 /** Imagem integral na frente e a mesma imagem ampliada/desfocada por trás. */
-function CoverLayers({ src, alt }: CoverLayersProps) {
+function CoverLayers({ src, alt, zoomOnHover = false }: CoverLayersProps) {
   if (!src) return <span className="absolute inset-0 bg-ink-800" aria-hidden="true" />;
 
   return (
@@ -158,7 +159,9 @@ function CoverLayers({ src, alt }: CoverLayersProps) {
         src={src}
         alt={alt}
         loading="lazy"
-        className="relative z-10 block h-full w-full object-contain"
+        className={`relative z-10 block h-full w-full object-contain ${
+          zoomOnHover ? 'transition-transform duration-700 ease-out md:group-hover:scale-110' : ''
+        }`}
       />
       <span
         aria-hidden="true"
@@ -190,7 +193,7 @@ function HomeTile({ album, image, label, featured = false, delay = 0, onOpen }: 
         className="group relative block size-full overflow-hidden rounded-2xl bg-ink-800 text-left shadow-[0_16px_38px_rgba(0,0,0,0.3)] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-gold-400"
         aria-label={`Abrir álbum ${album.title}`}
       >
-        <CoverLayers src={image} alt={`Imagem do álbum ${album.title}`} />
+        <CoverLayers src={image} alt={`Imagem do álbum ${album.title}`} zoomOnHover />
         <span className="pointer-events-none absolute inset-0 z-30 rounded-2xl border-2 border-transparent transition-colors duration-500 group-hover:border-gold-500/70" />
         <span className="pointer-events-none absolute left-4 top-1/2 z-30 flex size-12 -translate-y-1/2 scale-50 items-center justify-center rounded-full bg-gold-500 text-ink-950 opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 md:left-6 md:size-14">
           <ZoomIn className="size-5 md:size-6" />
