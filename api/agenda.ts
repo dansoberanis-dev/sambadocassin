@@ -15,18 +15,8 @@ type PublishedShow = {
   ticketUrl?: string;
 };
 
-type WordPressPost = {
-  id: number;
-  status: string;
-  modified?: string;
-  categories: number[];
-  content?: { rendered?: string };
-};
-
-const WORDPRESS_SITE = 'cassinsite9.wordpress.com';
-const WORDPRESS_POST_ID = 68;
-const WORDPRESS_AGENDA_CATEGORY_ID = 13502;
-const WORDPRESS_API_URL = `https://public-api.wordpress.com/wp/v2/sites/${WORDPRESS_SITE}/posts/${WORDPRESS_POST_ID}`;
+const DEFAULT_AGENDA_CSV_URL =
+  'https://docs.google.com/spreadsheets/d/e/2PACX-1vSQ7FtQ_8QZ51OVjmNdTGV8J9awIjeoXPgaUIYqfDwRZofJF56oxhmRnZXF-eUgD9hVtlYQfcj9-t2u/pub?gid=0&single=true&output=csv';
 const CANCELLED_STATUSES = new Set(['CANCELADO', 'CANCELADA', 'CANCELLED', 'CANCELED', 'CANCEL']);
 
 const NAMED_HTML_ENTITIES: Record<string, string> = {
@@ -71,7 +61,6 @@ function normalizeHeader(value: string): string {
     .replace(/[^A-Z0-9]/g, '');
 }
 
-/** Formats only the rendered value; WordPress source data is left untouched. */
 function formatDisplayText(value: string): string {
   return decodeHtmlEntities(value)
     .replace(/[\u00a0\s]+/g, ' ')
@@ -79,50 +68,56 @@ function formatDisplayText(value: string): string {
     .toLocaleUpperCase('pt-BR');
 }
 
-function cellText(cellMarkup: string): string {
-  const text = cellMarkup
-    .replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1\s*>/gi, ' ')
-    .replace(/<br\b[^>]*\/?\s*>/gi, ' ')
-    .replace(/<\/(?:p|div|li|h[1-6])\s*>/gi, ' ')
-    .replace(/<[^>]*>/g, ' ');
+/** Handles quoted commas, escaped quotes, BOM and CRLF/LF line endings. */
+function parseCsvRows(csvText: string): string[][] {
+  const text = csvText.replace(/^\uFEFF/, '');
+  const rows: string[][] = [];
+  let row: string[] = [];
+  let cell = '';
+  let insideQuotes = false;
 
-  return decodeHtmlEntities(text).replace(/[\u00a0\s]+/g, ' ').trim();
-}
+  for (let index = 0; index < text.length; index++) {
+    const character = text[index];
 
-function extractFirstHref(cellMarkup: string): string | undefined {
-  const anchor = cellMarkup.match(/<a\b[^>]*\bhref\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))[^>]*>/i);
-  const href = anchor?.[1] ?? anchor?.[2] ?? anchor?.[3];
-  return href ? decodeHtmlEntities(href).trim() : undefined;
-}
+    if (insideQuotes) {
+      if (character === '"' && text[index + 1] === '"') {
+        cell += '"';
+        index++;
+      } else if (character === '"') {
+        insideQuotes = false;
+      } else {
+        cell += character;
+      }
+      continue;
+    }
 
-function normalizeTicketUrl(value: string, fromAnchor = false): string | undefined {
-  const trimmed = decodeHtmlEntities(value).trim();
-  if (!trimmed || trimmed === '#') return undefined;
-
-  let candidate = trimmed;
-  if (candidate.startsWith('//')) {
-    candidate = `https:${candidate}`;
-  } else if (/^[a-z][a-z\d+.-]*:/i.test(candidate)) {
-    // Keep an explicit scheme so unsupported protocols can be rejected below.
-  } else if (fromAnchor && candidate.startsWith('/')) {
-    candidate = `https://${WORDPRESS_SITE}${candidate}`;
-  } else {
-    candidate = `https://${candidate}`;
+    if (character === '"' && cell.length === 0) {
+      insideQuotes = true;
+    } else if (character === ',') {
+      row.push(cell);
+      cell = '';
+    } else if (character === '\r' || character === '\n') {
+      if (character === '\r' && text[index + 1] === '\n') index++;
+      row.push(cell);
+      if (row.some((value) => value.trim())) rows.push(row);
+      row = [];
+      cell = '';
+    } else {
+      cell += character;
+    }
   }
 
-  try {
-    const url = new URL(candidate);
-    if (url.protocol !== 'http:' && url.protocol !== 'https:') return undefined;
-    if (!url.hostname || (!fromAnchor && !url.hostname.includes('.'))) return undefined;
-    if (url.username || url.password) return undefined;
-    return url.toString();
-  } catch {
-    return undefined;
+  if (insideQuotes) throw new Error('O CSV da Agenda contém aspas sem fechamento.');
+  if (cell.length > 0 || row.length > 0) {
+    row.push(cell);
+    if (row.some((value) => value.trim())) rows.push(row);
   }
+
+  return rows;
 }
 
 function parseDate(value: string): string | null {
-  const normalized = value.trim();
+  const normalized = decodeHtmlEntities(value).trim();
   const iso = normalized.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);
   const brazilian = normalized.match(/^(\d{1,2})[/.\-](\d{1,2})(?:[/.\-](\d{2,4}))?$/);
 
@@ -167,60 +162,83 @@ function getSaoPauloYear(): number {
   return year ? Number(year) : new Date().getFullYear();
 }
 
-function getTableRows(renderedContent: string): string[][] {
-  const tables = [...renderedContent.matchAll(/<table\b[^>]*>([\s\S]*?)<\/table\s*>/gi)];
-  const requiredHeaders = ['DATA', 'CIDADE', 'LOCAL'];
+/** Converts common Brazilian inputs such as 19:00, 19h, 19h30 and 19:30. */
+function normalizeTime(value: string): string | undefined {
+  const trimmed = decodeHtmlEntities(value).trim();
+  if (!trimmed) return undefined;
 
-  for (const table of tables) {
-    const rows = [...table[1].matchAll(/<tr\b[^>]*>([\s\S]*?)<\/tr\s*>/gi)].map((rowMatch) =>
-      [...rowMatch[1].matchAll(/<t[dh]\b[^>]*>([\s\S]*?)<\/t[dh]\s*>/gi)].map((cellMatch) => cellMatch[1])
-    );
-    const headerRow = rows[0];
-    if (!headerRow) continue;
+  const match = trimmed.toLowerCase().replace(/\s+/g, '').match(/^(\d{1,2})(?::|h)?(\d{2})?$/);
+  if (!match) return formatDisplayText(trimmed);
 
-    const headers = headerRow.map((header) => normalizeHeader(cellText(header)));
-    if (requiredHeaders.every((header) => headers.includes(header))) return rows;
-  }
+  const hours = Number(match[1]);
+  const minutes = match[2] ? Number(match[2]) : 0;
+  if (hours > 23 || minutes > 59) return formatDisplayText(trimmed);
 
-  throw new Error('Não foi encontrada uma tabela publicada com os cabeçalhos DATA, CIDADE e LOCAL.');
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
 }
 
 type HeaderIndexes = Map<string, number>;
 
-function getCellMarkup(row: string[], headers: HeaderIndexes, ...names: string[]): string {
-  for (const name of names) {
-    const index = headers.get(normalizeHeader(name));
+function cellValue(row: string[], headers: HeaderIndexes, ...aliases: string[]): string {
+  for (const alias of aliases) {
+    const index = headers.get(normalizeHeader(alias));
     if (index !== undefined) return row[index] ?? '';
   }
   return '';
 }
 
-function parseShows(renderedContent: string): PublishedShow[] {
-  const [headerRow, ...dataRows] = getTableRows(renderedContent);
-  if (!headerRow) throw new Error('A tabela publicada está vazia.');
+function normalizeTicketUrl(value: string): string | undefined {
+  const trimmed = decodeHtmlEntities(value).trim();
+  if (!trimmed || trimmed === '#') return undefined;
+
+  let candidate = trimmed;
+  if (candidate.startsWith('//')) {
+    candidate = `https:${candidate}`;
+  } else if (!/^[a-z][a-z\d+.-]*:/i.test(candidate)) {
+    candidate = `https://${candidate}`;
+  }
+
+  try {
+    const url = new URL(candidate);
+    if (url.protocol !== 'http:' && url.protocol !== 'https:') return undefined;
+    if (!url.hostname || !url.hostname.includes('.')) return undefined;
+    if (url.username || url.password) return undefined;
+    return url.toString();
+  } catch {
+    return undefined;
+  }
+}
+
+function parseCsvShows(csvText: string): PublishedShow[] {
+  const [headerRow, ...dataRows] = parseCsvRows(csvText);
+  if (!headerRow) throw new Error('O CSV publicado da Agenda está vazio.');
 
   const headers: HeaderIndexes = new Map(
-    headerRow.map((header, index) => [normalizeHeader(cellText(header)), index])
+    headerRow.map((header, index) => [normalizeHeader(header), index])
   );
+  const requiredHeaders = ['DATA', 'CIDADE', 'LOCAL'];
+  if (!requiredHeaders.every((header) => headers.has(header))) {
+    throw new Error('O CSV precisa conter os cabeçalhos DATA, CIDADE e LOCAL.');
+  }
 
   const shows = dataRows.flatMap((row) => {
-    if (!row.some((cell) => cellText(cell))) return [];
+    if (!row.some((value) => value.trim())) return [];
 
-    const date = parseDate(cellText(getCellMarkup(row, headers, 'DATA', 'DATE')));
-    const city = formatDisplayText(cellText(getCellMarkup(row, headers, 'CIDADE', 'CITY')));
-    const venue = formatDisplayText(cellText(getCellMarkup(row, headers, 'LOCAL', 'VENUE')));
+    const date = parseDate(cellValue(row, headers, 'DATA', 'DATE'));
+    const city = formatDisplayText(cellValue(row, headers, 'CIDADE', 'CITY'));
+    const venue = formatDisplayText(cellValue(row, headers, 'LOCAL', 'VENUE'));
     if (!date || !city || !venue) return [];
 
-    const status = normalizeHeader(cellText(getCellMarkup(row, headers, 'STATUS', 'SITUACAO', 'SITUATION')));
+    const status = normalizeHeader(cellValue(row, headers, 'STATUS', 'SITUACAO', 'SITUATION'));
     if (CANCELLED_STATUSES.has(status)) return [];
 
-    const time = formatDisplayText(cellText(getCellMarkup(row, headers, 'HORARIO', 'TIME')));
+    const time = normalizeTime(cellValue(row, headers, 'HORARIO', 'HORA', 'TIME'));
     const description = formatDisplayText(
-      cellText(getCellMarkup(row, headers, 'DESCRICAO', 'DESCRIPTION', 'OBSERVACAO', 'OBSERVATION'))
+      cellValue(row, headers, 'DESCRICAO', 'DESCRIPTION', 'OBSERVACAO', 'OBSERVATION')
     );
-    const ticketCell = getCellMarkup(row, headers, 'LINKINGRESSOS', 'TICKETURL', 'LINK');
-    const linkedUrl = normalizeTicketUrl(extractFirstHref(ticketCell) ?? '', true);
-    const ticketUrl = linkedUrl ?? normalizeTicketUrl(cellText(ticketCell));
+    const ticketUrl = normalizeTicketUrl(
+      cellValue(row, headers, 'LINKINGRESSOS', 'LINKDEINGRESSOS', 'TICKETURL', 'LINK', 'INGRESSOS')
+    );
 
     return [
       {
@@ -234,7 +252,7 @@ function parseShows(renderedContent: string): PublishedShow[] {
     ];
   });
 
-  if (shows.length === 0) throw new Error('A tabela publicada não contém nenhum show com DATA, CIDADE e LOCAL válidos.');
+  if (shows.length === 0) throw new Error('O CSV não contém shows com DATA, CIDADE e LOCAL válidos.');
   return shows;
 }
 
@@ -245,48 +263,49 @@ export default async function handler(req: ApiRequest, res: ApiResponse) {
     return res.status(405).json({ configured: false, shows: [] });
   }
 
+  const configuredUrl = process.env.AGENDA_CSV_URL?.trim() || DEFAULT_AGENDA_CSV_URL;
+  let csvUrl: URL;
+  try {
+    csvUrl = new URL(configuredUrl.replace(/&amp;/gi, '&'));
+  } catch {
+    console.error('Agenda CSV URL is invalid.');
+    return res.status(500).json({ configured: false, shows: [] });
+  }
+  if (csvUrl.protocol !== 'https:') {
+    console.error('Agenda CSV URL must use HTTPS.');
+    return res.status(500).json({ configured: false, shows: [] });
+  }
+  // Bust the upstream cache so edits in Sheets reach the site on the next refresh.
+  csvUrl.searchParams.set('_cb', String(Date.now()));
+
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 10_000);
-  const url = new URL(WORDPRESS_API_URL);
-  url.searchParams.set('_fields', 'id,status,modified,categories,content');
-  // Evita servir uma cópia anterior da tabela após Cassin publicar alterações.
-  url.searchParams.set('_cb', String(Date.now()));
 
   try {
-    const response = await fetch(url.toString(), {
-      headers: { Accept: 'application/json' },
+    const response = await fetch(csvUrl.toString(), {
+      headers: { Accept: 'text/csv' },
       signal: controller.signal,
     });
 
     if (!response.ok) {
-      console.error('WordPress agenda request failed with status', response.status);
+      console.error('Google Sheets agenda CSV request failed with status', response.status);
       return res.status(502).json({ configured: false, shows: [] });
     }
 
-    const post = (await response.json()) as WordPressPost;
-    if (post.id !== WORDPRESS_POST_ID || post.status !== 'publish') {
-      console.error('WordPress agenda post is missing or not published.');
-      return res.status(502).json({ configured: false, shows: [] });
-    }
-    if (!Array.isArray(post.categories) || !post.categories.includes(WORDPRESS_AGENDA_CATEGORY_ID)) {
-      console.error('WordPress agenda post is not assigned to the AGENDA category.');
+    const csvText = await response.text();
+    if (!csvText.trim() || /^\s*</.test(csvText)) {
+      console.error('Google Sheets agenda endpoint did not return CSV text.');
       return res.status(502).json({ configured: false, shows: [] });
     }
 
-    const renderedContent = post.content?.rendered;
-    if (!renderedContent) {
-      console.error('WordPress agenda post has no rendered content.');
-      return res.status(502).json({ configured: false, shows: [] });
-    }
-
-    const shows = parseShows(renderedContent);
+    const shows = parseCsvShows(csvText);
     return res.status(200).json({
       configured: true,
       shows,
-      updatedAt: post.modified ?? new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     });
   } catch (error) {
-    console.error('WordPress agenda request failed', error instanceof Error ? error.message : 'unknown error');
+    console.error('Google Sheets agenda request failed', error instanceof Error ? error.message : 'unknown error');
     return res.status(502).json({ configured: false, shows: [] });
   } finally {
     clearTimeout(timeout);
