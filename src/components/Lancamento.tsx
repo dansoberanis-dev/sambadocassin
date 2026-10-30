@@ -12,7 +12,7 @@ import { YouTubeIcon } from './BrandIcons';
 function VideoPlayer() {
   const r = config.release;
   const [playing, setPlaying] = useState(false);
-  const poster = r.poster || (r.youtubeId ? `https://i.ytimg.com/vi/${r.youtubeId}/hqdefault.jpg` : r.cover);
+  const poster = r.youtubeId ? `https://i.ytimg.com/vi/${r.youtubeId}/maxresdefault.jpg` : (r.poster || r.cover);
   const channel = config.streaming.youtube || config.social.youtube;
 
   return (
@@ -21,7 +21,7 @@ function VideoPlayer() {
         <iframe
           className="absolute inset-0 size-full"
           src={`https://www.youtube-nocookie.com/embed/${r.youtubeId}?autoplay=1&rel=0&modestbranding=1`}
-          title={r.title}
+          title={r.youtubeTitle || r.title}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           allowFullScreen
         />
@@ -32,7 +32,7 @@ function VideoPlayer() {
           rel={r.youtubeId ? undefined : 'noopener noreferrer'}
           onClick={r.youtubeId ? () => setPlaying(true) : undefined}
           className="absolute inset-0 size-full"
-          aria-label={r.youtubeId ? `Assistir: ${r.title}` : `Assistir no YouTube: ${r.title}`}
+          aria-label={r.youtubeId ? `Assistir: ${r.youtubeTitle || r.title}` : `Assistir no YouTube: ${r.title}`}
         >
           <img
             src={poster}
@@ -83,13 +83,13 @@ export function Lancamento() {
           <h3 className="mx-auto max-w-3xl text-center font-display text-2xl tracking-wide text-cream/90 md:text-4xl">{r.title}</h3>
         </Reveal>
 
-        <div className="mt-12 grid items-center gap-12 lg:grid-cols-[1fr_340px]">
-          <Reveal animation="zoomIn" delay={300}>
+        <div className="mt-12">
+          <Reveal animation="zoomIn" delay={300} className="mx-auto w-full max-w-5xl">
             <VideoPlayer />
           </Reveal>
 
-          <Reveal animation="fadeInRight" delay={600}>
-            <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
+          <Reveal animation="fadeInRight" delay={600} className="mt-16">
+            <div className="mx-auto flex max-w-xl flex-col items-center text-center">
               {/* Capa + vinil girando */}
               <div className="relative mb-8 w-48 md:w-52">
                 <div className="vinyl animate-spin-slow absolute inset-y-[5%] left-[34%] aspect-square">
@@ -126,7 +126,7 @@ export function Lancamento() {
                 </div>
               )}
 
-              <StreamingButtons compact baseDelay={700} className="mt-6 lg:justify-start" />
+              <StreamingButtons compact baseDelay={700} className="mt-6" />
             </div>
           </Reveal>
         </div>

@@ -2,7 +2,7 @@
    🥁 CONFIGURAÇÃO DO SITE — SAMBA DO CASSIN
    --------------------------------------------------------------------------
    Tudo que aparece no site (agenda de shows, lançamento, discografia,
-   fotos, integrantes e contatos) está centralizado neste arquivo.
+   fotos e contatos) está centralizado neste arquivo.
    ========================================================================== */
 
 export interface Show {
@@ -31,14 +31,6 @@ export interface Album {
   palette?: [string, string];
   /** Link para ouvir */
   url: string;
-}
-
-export interface Member {
-  name: string;
-  role: string;
-  /** Foto do integrante. Se não tiver, aparece um avatar com as iniciais. */
-  photo?: string;
-  instagram?: string;
 }
 
 export interface Photo {
@@ -160,41 +152,6 @@ const photos: Photo[] = [
   },
 ];
 
-/* ---------------------------- INTEGRANTES ---------------------------- */
-/* 👉 Sem foto: aparece um avatar com as iniciais. Adicione "photo: 'images/x.jpg'" quando tiver as fotos. */
-const members: Member[] = [
-  {
-    name: 'Cassin Vieira',
-    role: 'Voz, cavaquinho e direção musical',
-    photo: 'images/cassinperfil.png',
-    instagram: 'https://www.instagram.com/sambadocassin/',
-  },
-  {
-    name: 'Bruna Alcântara',
-    role: 'Voz e percussão',
-    photo: 'images/brunaperfil.png',
-    instagram: 'https://www.instagram.com/bru.alcantara06/',
-  },
-  {
-    name: 'Marcão',
-    role: 'Pandeiro',
-    photo: 'images/carcaoperfil.png',
-    instagram: 'https://www.instagram.com/marcos.peres1/',
-  },
-  {
-    name: 'Ystuarty Martins',
-    role: 'Violão',
-    photo: 'images/ystuartyperfil.png',
-    instagram: 'https://www.instagram.com/ystuarty_martins/',
-  },
-  {
-    name: 'Gui Graúdo',
-    role: 'Percussão',
-    photo: 'images/guiperfil.png',
-    instagram: 'https://www.instagram.com/guiii.alberti/',
-  },
-];
-
 /* ----------------------------- INSTAGRAM ----------------------------- */
 const instagramPosts: InstaPost[] = [
   { image: 'images/insta6.png', likes: '3,1 mil', comments: '124' },
@@ -233,7 +190,8 @@ export const config = {
     song: 'O Princípio',
     title: 'Samba do Cassin — O Princípio',
     /** 👉 ID do vídeo do grupo (o código depois de "watch?v="). Deixe '' para o botão abrir o canal. */
-    youtubeId: '',
+    youtubeId: 'dXSYJTuTsuc',
+    youtubeTitle: 'SAMBA DO CASSIN - MEU SAMBA O PRINCÍPIO - AO VIVO',
     poster: `${DEEZER}/833414011186f498ed176121e9e51707/1000x1000-000000-80-0-0.jpg`,
     cover: `${DEEZER}/833414011186f498ed176121e9e51707/1000x1000-000000-80-0-0.jpg`,
     text: 'Primeiro álbum autoral de Cassin Vieira, com composições em parceria com Nego Chandi e arranjos de Gustavo Moro. Gravado no Estúdio Zeroneutro, em Brasília, com os produtores Marcel Papa e Daniel Felix. 8 faixas, 27 minutos de samba.',
@@ -252,7 +210,6 @@ export const config = {
 
   albums,
   photos,
-  members,
   instagramPosts,
 
   bio: {
