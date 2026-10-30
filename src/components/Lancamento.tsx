@@ -51,8 +51,8 @@ function VideoPlayer() {
 
           <span className="absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-5 text-left md:p-7">
             <span>
-              <span className="block font-display text-sm tracking-[0.35em] text-gold-400">ASSISTA NO YOUTUBE</span>
-              <span className="block font-display text-2xl text-cream md:text-4xl">{r.song}</span>
+              <span className="block font-display text-sm tracking-[0.35em] text-gold-400">ASSISTA O AUDIOVISUAL</span>
+              <span className="block font-display text-2xl text-cream uppercase md:text-4xl">{r.song}</span>
             </span>
             <span className="hidden items-center gap-2 rounded-full bg-[#FF0033] px-3 py-1.5 text-xs font-bold text-white sm:flex">
               <YouTubeIcon className="size-4" />
