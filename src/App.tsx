@@ -3,9 +3,9 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { Marquee } from './components/Marquee';
 import { Agenda } from './components/Agenda';
+import { ResumoFimDeSemana } from './components/ResumoFimDeSemana';
 import { Lancamento } from './components/Lancamento';
 import { Discografia } from './components/Discografia';
-import { Fotos } from './components/Fotos';
 import { Bio } from './components/Bio';
 import { Contrate } from './components/Contrate';
 import { Instagram } from './components/Instagram';
@@ -16,7 +16,7 @@ import { AgendaProvider } from './contexts/AgendaContext';
 
 /**
  * Site do grupo — estrutura inspirada em pericles.com.br:
- * Capa → Agenda (carrossel automático) → Lançamento → Discografia → Fotos → Bio → Contrate → Instagram
+ * Capa → Agenda (carrossel automático) → Resumo do fim de semana → Lançamento → Discografia → Bio → Contrate → Instagram
  *
  * 👉 Para editar textos, shows, fotos e contatos, abra: src/data/config.ts
  */
@@ -30,9 +30,9 @@ export default function App() {
           <Hero />
           <Marquee />
           <Agenda />
+          <ResumoFimDeSemana />
           <Lancamento />
           <Discografia />
-          <Fotos />
           <Bio />
           <Contrate />
           <Instagram />

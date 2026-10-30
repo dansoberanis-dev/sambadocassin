@@ -7,9 +7,9 @@ export const INTRO_DELAY = 1300;
 export const NAV_LINKS = [
   { id: 'capa', label: 'Capa' },
   { id: 'agenda', label: 'Agenda' },
+  { id: 'resumo-do-fim-de-semana', label: 'Resumo' },
   { id: 'lancamento', label: 'Lançamento' },
   { id: 'discografia', label: 'Discografia' },
-  { id: 'fotos', label: 'Fotos' },
   { id: 'bio', label: 'Bio' },
   { id: 'contrate', label: 'Contrate' },
 ];
